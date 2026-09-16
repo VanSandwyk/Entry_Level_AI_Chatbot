@@ -52,3 +52,19 @@ class ChatbotEngine:
     def save_bot_response(self, full_ai_answer: str):
         """Saves the completed AI response back into memory once streaming finishes."""
         self.rolling_history.append({"role": "assistant", "content": full_ai_answer})
+
+#=========================================================
+#UI Implementations Methods
+#=========================================================
+def get_chat_history(self):
+    """
+    Returns a clean list of the current active dialogue logs.
+    Also excludes the hidden system instructions so that the UI only renders the actual user vs assistant convo
+    """
+
+    return list(self.rolling_history)
+
+def reset_chat(self):
+    """
+    a method that clears out all data logs from memory 
+    """
