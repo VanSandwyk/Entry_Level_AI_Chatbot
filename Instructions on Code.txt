@@ -1,0 +1,31 @@
+pip install groq python-dotenv : This installs groq pre written package as well as loads our api key stored in .env .
+
+client.chat.completions.create(): returns a nested json in the following format which python reads as a dictionairy;
+{
+  "id": "chatcmpl-12345",
+  "object": "chat.completion",
+  "created": 1718549823,
+  "model": "openai/gpt-oss-20b",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "I don't always test my code, but when I do, I do it in production."
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 18,
+    "completion_tokens": 15,
+    "total_tokens": 33
+  }
+}
+. 
+
+The handling of the response we used response.choices[0].message.content where :
+response: The whole package delivered from the cloud.
+.choices: A list of possible answers. (By default, the AI only generates one answer, which sits at index 0).
+.message: The message object inside that chosen slot.
+.content: The actual string of text typed by the AI (your joke!)
