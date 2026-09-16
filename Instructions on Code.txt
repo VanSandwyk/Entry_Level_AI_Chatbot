@@ -29,3 +29,27 @@ response: The whole package delivered from the cloud.
 .choices: A list of possible answers. (By default, the AI only generates one answer, which sits at index 0).
 .message: The message object inside that chosen slot.
 .content: The actual string of text typed by the AI (your joke!)
+
+API's are stateless: each time a request is sent it follows as a new entry and has no memory.
+For this chatbot we want it to be stateful, so we manage the memory locally in python, we make a chatbot statefull by integrating an array called messages , every message is just appended to the array. The same for responses we then
+send the entire list. I think this is ineffective . 
+
+There are multiple ways of combating this:
+1) Rolling window approach: We keep an array of 10 messages and then drop as we go on eg if message 11 comes through then we drop message 1
+2) Summarizer approach: We ask for the AI to summarize the above in 3 bullet points however this will cause a significant amount of data loss. 
+3) If we want an advanced AI chatbot we can perhaps use a vector DB that stores all the messages and responses into a DB and a script retrieves the info.
+
+Tokens are a method of billing AI companies use, a token relates to words. 
+
+for version 0.1 we might start implementing the rolling window approach. To do this we will use a python data structure called a deque with a maximum length.
+A deque works like a pipe with 10 tennis balls inside of it, once you push in another tennis ball in the last on the side drops out. However there is a prompt we must keep in our pipeline 
+which will be the prompt indicating its personality, if that drops the ai loses its core. 
+
+1)We indicate this as a system rule and keep this at index [0] which will be the core personality
+2)Then we use dynamic sliding after index[0] with a capped maximum of 10 items 
+3)The payload will be the chat history with the system personality at index [0]
+
+This implementation works, However we will be streamlining this:
+1) We will be adding a better security framework
+2) Updating user friendliness
+3) Guarding the personality 
