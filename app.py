@@ -25,9 +25,7 @@ class ChatbotApp(ctk.CTk):
 
         self.last_ai_response = ""
 
-        # ==========================================
-        # 1. PREMIUM SIDEBAR
-        # ==========================================
+   
         self.sidebar = ctk.CTkFrame(self, width=220, corner_radius=0, fg_color="#1a1a1a")
         self.sidebar.grid(row=0, column=0, sticky="nsew")
         self.sidebar.grid_rowconfigure(4, weight=1) 
@@ -46,9 +44,7 @@ class ChatbotApp(ctk.CTk):
         self.theme_menu = ctk.CTkOptionMenu(self.sidebar, values=["Dark", "Light", "System"], command=ctk.set_appearance_mode)
         self.theme_menu.grid(row=6, column=0, padx=20, pady=(0, 25), sticky="ew")
 
-        # ==========================================
-        # 2. MAIN DISPLAY INTERFACE
-        # ==========================================
+   
         self.chat_frame = ctk.CTkFrame(self, fg_color="transparent")
         self.chat_frame.grid(row=0, column=1, sticky="nsew", padx=25, pady=25)
         self.chat_frame.grid_columnconfigure(0, weight=1)
@@ -67,9 +63,7 @@ class ChatbotApp(ctk.CTk):
         )
         self.chat_display.grid(row=0, column=0, columnspan=2, sticky="nsew", padx=0, pady=(0, 25))
 
-        # ==========================================
-        # 3. TYPOGRAPHY TAG STYLING CONFIGURATIONS
-        # ==========================================
+     
         # These rules intercept text styles and format them beautifully on the fly
         self.chat_display._textbox.tag_config("user_header", font=("Segoe UI", 14, "bold"), foreground="#a6e3a1")
         self.chat_display._textbox.tag_config("bot_header", font=("Segoe UI", 14, "bold"), foreground="#89b4fa")
@@ -88,9 +82,7 @@ class ChatbotApp(ctk.CTk):
         self.inject_styled_block("✨ Workspace Active. How can I assist you today?\n\n", "bot_header")
         self.inject_styled_block("---------------------------------------------------------------\n\n", "divider")
 
-    # ==========================================
-    # TYPOGRAPHY PARSING LOGIC
-    # ==========================================
+
 
     def inject_styled_block(self, text: str, tag: str = None):
         """Safely inserts a block of text bound to a specific typographical style tag."""
@@ -133,9 +125,7 @@ class ChatbotApp(ctk.CTk):
             # Add line break at the end of each line item row
             self.inject_styled_block("\n")
 
-    # ==========================================
-    # ACTION CONTROLS
-    # ==========================================
+
 
     def ui_reset_chat(self):
         self.bot_brain.reset_chat()
