@@ -1,79 +1,47 @@
-import os #imports native os packages 
 import sys
-from collections import deque
-from dotenv import load_dotenv # loads my API key from .env
-from groq import Groq
+from chatbot_engine import ChatbotEngine
 
-#Function that loads the .env variable which is my api key 
-load_dotenv() 
+# Initialize our decoupled modular engine
+bot_brain = ChatbotEngine(
+    system_instruction="You are a helpful, clear, and friendly AI assistant.",
+    max_memory=10
+)
 
-api_key = os.getenv("GROQ_API_KEY")
-if not api_key or api_key == "your_actual_api_key_here":
-    print("\n [SECURITY ERROR] Missing API Key!")
-    print("Please ensure '.env' file exists and contains : GROQ_API_KEY=your_key")
-    sys.exit(1)
-
-
-#Initialization
-client = Groq(api_key = api_key)
-Model_Name = "openai/gpt-oss-20b"
-
-#============================================
-# Chatbot Core
-#============================================
-
-#This is the system Instruction we can change later one that defines the personality of the chatbot
-SYSTEM_INSTRUCTION = {"role":"system","content":"You are a helpful, clear, and friendly AI assistant"}
-#Now we setup the rolling Window Memory (CAPPED at 10)
-rolling_history = deque(maxlen=10)
-
-print("========================================================")
-print("Production Engine Active")
-print("type 'quit' or 'exit' to turn off engine")
-print("========================================================")
-
-#=============================================
-# Interaction loop
-#=============================================
+print("==========================================================")
+print("Modular Production Engine Active (Class-Based Architecture)")
+print("Type 'quit' or 'exit' to turn off the engine.")
+print("==========================================================")
 
 while True:
     try:
-        user_input = input("\n Type your message: ")
-    except (KeyboardInterrupt,EOFError):
-        print("\n Goodbye")
+        user_input = input("\nYou: ")
+    except (KeyboardInterrupt, EOFError):
+        print("\nGoodbye!")
         break
-
-    if user_input.lower() in ["quit","exit"]: #checks for stop case
-        print("Goodbye")
+        
+    if user_input.lower() in ["quit", "exit"]:
+        print("Goodbye!")
         break
+        
     if not user_input.strip():
         continue
-
-    rolling_history.append({"role":"user","content":user_input})
-    payload = [SYSTEM_INSTRUCTION]+ list(rolling_history)
-
-    print("\nAssistant: ",end="",flush=True)
-
+        
+    print("\nAssistant: ", end="", flush=True)
+    
     try:
-        response_stream = client.chat.completions.create(
-            model=Model_Name,
-            messages=payload,
-            temperature=0.7,  #Balance between consistency and natuaral flow
-            stream=True       #Allows text delivery token by token
-        )
-
-        full_ai_answer = ""
-
-        for chunk in response_stream:
+        # Get the stream stream from our modular class
+        stream = bot_brain.get_streaming_response(user_input)
+        
+        full_answer = ""
+        for chunk in stream:
             if chunk.choices and chunk.choices[0].delta.content:
                 text_chunk = chunk.choices[0].delta.content
-                print(text_chunk,end="",flush=True) #prints instant word by word
-                full_ai_answer += text_chunk
-
+                print(text_chunk, end="", flush=True)
+                full_answer += text_chunk
         print()
-
-        rolling_history.append({"role": "assistant", "content": full_ai_answer})
-                
-
-    except Exception as e:
-        print(f"\n An error occured: {e}")
+        
+        # Tell the engine to commit the final string to memory
+        bot_brain.save_bot_response(full_answer)
+        
+    except Exception as network_error:
+        print(f"\n[NETWORK ERROR] Could not get response: {network_error}")
